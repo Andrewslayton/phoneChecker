@@ -33,6 +33,7 @@ def is_looking_down(frame):
         left_eye_bottom = max(landmarks.part(i).y for i in left_eye_points)
         right_eye_bottom = max(landmarks.part(i).y for i in right_eye_points)
         
+        # need to change 
         if left_eye_center[1] > left_eye_bottom - (left_eye_bottom - left_eye_top) / 2 or right_eye_center[1] > right_eye_bottom - (right_eye_bottom - right_eye_top) / 2:
             return True
 
