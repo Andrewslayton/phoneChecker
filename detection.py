@@ -19,8 +19,14 @@ def is_looking_down(frame):
         landmarks = predictor(gray, face)
         left_eye_center = get_eye_center(left_eye_points, landmarks)
         right_eye_center = get_eye_center(right_eye_points, landmarks)
-        slope = (right_eye_center[1] - left_eye_center[1]) / (right_eye_center[0] - left_eye_center[0])
-        if slope < 0:
+        cv2.rectangle(frame, (int(left_eye_center[0]-5), int(left_eye_center[1]-5)), (int(left_eye_center[0]+5), int(left_eye_center[1]+5)), (0,255,0), 1)
+        cv2.rectangle(frame, (int(right_eye_center[0]-5), int(right_eye_center[1]-5)), (int(right_eye_center[0]+5), int(right_eye_center[1]+5)), (0,255,0), 1)
+        left_eye_top = min(landmarks.part(i).y for i in left_eye_points)
+        right_eye_top = min(landmarks.part(i).y for i in right_eye_points)
+        left_eye_bottom = max(landmarks.part(i).y for i in left_eye_points)
+        right_eye_bottom = max(landmarks.part(i).y for i in right_eye_points)
+        
+        if left_eye_center[1] > (left_eye_top + left_eye_bottom) / 2 or right_eye_center[1] > (right_eye_top + right_eye_bottom) / 2:
             return True
 
     return False
@@ -30,6 +36,10 @@ def is_head_down(frame):
     faces = detector(gray)
     for face in faces:
         landmarks = predictor(gray, face)
+        left_eye_center = get_eye_center(left_eye_points, landmarks)
+        right_eye_center = get_eye_center(right_eye_points, landmarks)
+        cv2.rectangle(frame, (int(left_eye_center[0]-5), int(left_eye_center[1]-5)), (int(left_eye_center[0]+5), int(left_eye_center[1]+5)), (0,255,0), 1)
+        cv2.rectangle(frame, (int(right_eye_center[0]-5), int(right_eye_center[1]-5)), (int(right_eye_center[0]+5), int(right_eye_center[1]+5)), (0,255,0), 1)
         if landmarks.part(8).y - landmarks.part(27).y > 10:
             return True
     return False
@@ -48,8 +58,8 @@ def main():
                 start_time = time.time()
             else:
                 duration = time.time() - start_time
-                if duration >= 30:
-                    print("Looking down for 30 seconds")
+                if duration >= 1:
+                    print("Looking down for 1 seconds")
         else:
             start_time = None
         cv2.imshow('Frame', frame)
