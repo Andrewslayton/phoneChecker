@@ -1,10 +1,17 @@
+import os
+import sys
 import cv2
 import time
 import dlib
 import numpy as np
 
+if getattr(sys, 'frozen', False):
+    dat_file = os.path.join(sys._MEIPASS, 'shape_predictor_68_face_landmarks.dat')
+else:
+    dat_file = 'shape_predictor_68_face_landmarks.dat'
+
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
+predictor = dlib.shape_predictor(dat_file)
 left_eye_points = list(range(36, 42))
 right_eye_points = list(range(42, 48))
 
@@ -26,7 +33,7 @@ def is_looking_down(frame):
         left_eye_bottom = max(landmarks.part(i).y for i in left_eye_points)
         right_eye_bottom = max(landmarks.part(i).y for i in right_eye_points)
         
-        if left_eye_center[1] > (left_eye_top + left_eye_bottom) / 2 or right_eye_center[1] > (right_eye_top + right_eye_bottom) / 2:
+        if left_eye_center[1] > left_eye_bottom - (left_eye_bottom - left_eye_top) / 2 or right_eye_center[1] > right_eye_bottom - (right_eye_bottom - right_eye_top) / 2:
             return True
 
     return False
