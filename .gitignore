@@ -1,0 +1,12 @@
+*.dist 
+dist
+.dist
+detection
+detection.spec
+build
+*.egg-info
+*.egg
+*.pyc
+*.pyo
+*.pyd
+*.pyz
