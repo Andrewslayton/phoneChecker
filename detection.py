@@ -30,7 +30,7 @@ def capture_baseline(frame):
         landmarks = predictor(gray, face)
         left_eye_center = get_eye_center(left_eye_points, landmarks)
         right_eye_center = get_eye_center(right_eye_points, landmarks)
-        chin = (landmarks.part(8).x, landmarks.part(8).y)  # Chin is landmark 8
+        chin = (landmarks.part(8).x, landmarks.part(8).y) 
         forehead = ((landmarks.part(19).x + landmarks.part(24).x) // 2, (landmarks.part(19).y + landmarks.part(24).y) // 2) 
         baseline_data = {
             'left_eye_center': left_eye_center,
@@ -38,8 +38,32 @@ def capture_baseline(frame):
             'chin': chin,
             'forehead': forehead,
         }
+        print(baseline_data)
         return baseline_data 
     return None  
+
+def is_looking_down_baseline(baseline_data, frame):
+    if baseline_data is None:
+        return False
+    left_eye_center_base = baseline_data['left_eye_center']
+    right_eye_center_base = baseline_data['right_eye_center']
+    chin_base = baseline_data['chin']
+    forehead_base = baseline_data['forehead']
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces =  detector(gray)
+    for face in faces:
+        landmarks = predictor(gray, face)
+        left_eye_center = get_eye_center(left_eye_points, landmarks)
+        right_eye_center = get_eye_center(right_eye_points, landmarks)
+        chin_center = landmarks.part(8).y
+        forehead_center =  ((landmarks.part(19).y + landmarks.part(24).y) // 2)
+        if( chin_base[1] - chin_center > 33 or forehead_base[1] - forehead_center > 33):
+            return True
+        if (chin_base[1] and not chin_center):
+            return True
+        if (forehead_base[1] and not forehead_center):
+            return True
+        
 
 def is_looking_down(frame):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -55,9 +79,6 @@ def is_looking_down(frame):
         left_eye_bottom = max(landmarks.part(i).y for i in left_eye_points)
         right_eye_bottom = max(landmarks.part(i).y for i in right_eye_points)
         
-        # need to change 
-        if left_eye_center[1] > left_eye_bottom - (left_eye_bottom - left_eye_top) / 2 or right_eye_center[1] > right_eye_bottom - (right_eye_bottom - right_eye_top) / 2:
-            return True
 
     return False
 
@@ -100,22 +121,30 @@ def main():
         ret, frame = cap.read()
         if not ret:
             break
+        computational = is_looking_down_baseline(baseline_data, frame)
         looking_down = is_looking_down(frame)
-        head_down = is_head_down(frame)
-        if head_down:
+        head_down = is_head_down(frame) 
+        if computational:
             if start_time is None:
                 start_time = time.time()
             else:
                 duration = time.time() - start_time
                 if duration >= 2:
-                    print("Head down for 2 seconds")
-        if looking_down:
-            if start_time is None:
-                start_time = time.time()
-            else:
-                duration = time.time() - start_time
-                if duration >= 2:
-                    print("Looking down for 2 seconds")
+                    print("stupid!! for 2 seconds")
+        # if head_down:
+        #     if start_time is None:
+        #         start_time = time.time()
+        #     else:
+        #         duration = time.time() - start_time
+        #         if duration >= 2:
+        #             print("Head down for 2 seconds")
+        # if looking_down:
+        #     if start_time is None:
+        #         start_time = time.time()
+        #     else:
+        #         duration = time.time() - start_time
+        #         if duration >= 2:
+        #             print("Looking down for 2 seconds")
         else:
             start_time = None
         cv2.imshow('Frame', frame)
