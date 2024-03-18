@@ -57,44 +57,17 @@ def is_looking_down_baseline(baseline_data, frame):
         right_eye_center = get_eye_center(right_eye_points, landmarks)
         chin_center = landmarks.part(8).y
         forehead_center =  ((landmarks.part(19).y + landmarks.part(24).y) // 2)
-        if( chin_base[1] - chin_center > 33 or forehead_base[1] - forehead_center > 33):
+        if(chin_center - chin_base[1] > 33 or forehead_center - forehead_base[1] > 33):
             return True
-        if (chin_base[1] and not chin_center):
+        if (chin_base[1] and chin_center == None):
             return True
-        if (forehead_base[1] and not forehead_center):
+        if (forehead_base[1] and forehead_center == None):
             return True
-        
-
-def is_looking_down(frame):
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = detector(gray)
-    for face in faces:
-        landmarks = predictor(gray, face)
-        left_eye_center = get_eye_center(left_eye_points, landmarks)
-        right_eye_center = get_eye_center(right_eye_points, landmarks)
-        cv2.rectangle(frame, (int(left_eye_center[0]-5), int(left_eye_center[1]-5)), (int(left_eye_center[0]+5), int(left_eye_center[1]+5)), (0,255,0), 1)
-        cv2.rectangle(frame, (int(right_eye_center[0]-5), int(right_eye_center[1]-5)), (int(right_eye_center[0]+5), int(right_eye_center[1]+5)), (0,255,0), 1)
-        left_eye_top = min(landmarks.part(i).y for i in left_eye_points)
-        right_eye_top = min(landmarks.part(i).y for i in right_eye_points)
-        left_eye_bottom = max(landmarks.part(i).y for i in left_eye_points)
-        right_eye_bottom = max(landmarks.part(i).y for i in right_eye_points)
-        
-
-    return False
-
-def is_head_down(frame):
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = detector(gray)
-    for face in faces:
-        landmarks = predictor(gray, face)
-        chin_center = (landmarks.part(8).x, landmarks.part(8).y)
-        forehead_center = ((landmarks.part(19).x + landmarks.part(24).x) // 2, 
-                           (landmarks.part(19).y + landmarks.part(24).y) // 2)
-        cv2.circle(frame, chin_center, 5, (255, 0, 0), -1)
-        cv2.circle(frame, forehead_center, 5, (255, 0, 0), -1)
-        if chin_center[1] - forehead_center[1] < 50:  
+        if(chin_center and (left_eye_center, right_eye_center) == None):
             return True
     return False
+        
+
 
 
 def main():
@@ -103,10 +76,10 @@ def main():
     onPhone = 0
     while True:
         ret, frame = cap.read()
+        cv2.putText(frame, "Press 's' to save baseline posture", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         if not ret:
             break
         cv2.imshow('Frame', frame)
-        cv2.putText(frame, "Press 's' to save baseline posture", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         key = cv2.waitKey(1) & 0xFF
         if key == ord('s'):
             baseline_data = capture_baseline(frame)
@@ -119,32 +92,18 @@ def main():
             return  
     while True:
         ret, frame = cap.read()
+        cv2.putText(frame, "Press 'q' to quit", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         if not ret:
             break
         computational = is_looking_down_baseline(baseline_data, frame)
-        looking_down = is_looking_down(frame)
-        head_down = is_head_down(frame) 
         if computational:
+            print("comp ran ")
             if start_time is None:
                 start_time = time.time()
             else:
                 duration = time.time() - start_time
                 if duration >= 2:
                     print("stupid!! for 2 seconds")
-        # if head_down:
-        #     if start_time is None:
-        #         start_time = time.time()
-        #     else:
-        #         duration = time.time() - start_time
-        #         if duration >= 2:
-        #             print("Head down for 2 seconds")
-        # if looking_down:
-        #     if start_time is None:
-        #         start_time = time.time()
-        #     else:
-        #         duration = time.time() - start_time
-        #         if duration >= 2:
-        #             print("Looking down for 2 seconds")
         else:
             start_time = None
         cv2.imshow('Frame', frame)
