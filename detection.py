@@ -22,6 +22,8 @@ def get_eye_center(points, landmarks):
     return coordinates.mean(axis=0)
 
 
+
+
 def capture_baseline(frame):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces = detector(gray)
@@ -68,15 +70,20 @@ def is_looking_down_baseline(baseline_data, frame):
     return False
         
 
+def sens_setting(sens):
+    global sensitivity
+    sensitivity = sens
 
 
 def main():
     cap = cv2.VideoCapture(0)
     start_time = None
     onPhone = 0
+    cv2.namedWindow('Frame')
+    cv2.resizeWindow('Frame', 600, 600)
+    cv2.createTrackbar("Adjust sensitivity of phone detection (0-100)",'Frame', 0, 10, sens_setting)
     while True:
         ret, frame = cap.read()
-        cv2.putText(frame, "Press 's' to save baseline posture", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         if not ret:
             break
         cv2.imshow('Frame', frame)
@@ -85,6 +92,7 @@ def main():
             baseline_data = capture_baseline(frame)
             if baseline_data is not None:
                 print("Baseline posture saved successfully.")
+                cv2.destroyWindow('Frame')
                 break  
         elif key == ord('q'):
             cap.release()
@@ -104,6 +112,7 @@ def main():
                 duration = time.time() - start_time
                 if duration >= 2:
                     print("stupid!! for 2 seconds")
+                    onPhone += 1
         else:
             start_time = None
         cv2.imshow('Frame', frame)
