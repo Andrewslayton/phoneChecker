@@ -10,3 +10,5 @@ build
 *.pyo
 *.pyd
 *.pyz
+.env
+.env.*

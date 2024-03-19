@@ -4,6 +4,7 @@ import cv2
 import time
 import dlib
 import numpy as np
+from login import user_login_register
 
 if getattr(sys, 'frozen', False):
     dat_file = os.path.join(sys._MEIPASS, 'shape_predictor_68_face_landmarks.dat')
@@ -73,9 +74,11 @@ def is_looking_down_baseline(baseline_data, frame):
 def sens_setting(sens):
     global sensitivity
     sensitivity = sens
+    
 
 
 def main():
+    user_login_register()
     cap = cv2.VideoCapture(0)
     start_time = None
     onPhone = 0
@@ -105,7 +108,6 @@ def main():
             break
         computational = is_looking_down_baseline(baseline_data, frame)
         if computational:
-            print("comp ran ")
             if start_time is None:
                 start_time = time.time()
             else:
