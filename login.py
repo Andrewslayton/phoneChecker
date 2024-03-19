@@ -2,11 +2,11 @@ from time import sleep
 import tkinter as tk
 from tkinter import messagebox
 from aws.dynamodb import create_user, authenticate_user_and_get_id  # Adjusted import statement
-global_user_id = None
 
 def user_login_register():
     global global_user_id
     def on_submit():
+        global global_user_id 
         username = username_entry.get()
         password = password_entry.get()
         if mode.get() == "Login":
@@ -41,8 +41,9 @@ def user_login_register():
 
     submit_button = tk.Button(login_register_window, text="Submit", command=on_submit)
     submit_button.pack()
-
     login_register_window.mainloop()
+    return global_user_id
+    
 
 if __name__ == '__main__':
     user_login_register()

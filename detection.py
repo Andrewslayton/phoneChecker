@@ -4,7 +4,7 @@ import cv2
 import time
 import dlib
 import numpy as np
-from login import user_login_register, global_user_id
+from login import user_login_register
 from aws.dynamodb import increment_phone_usage
 
 if getattr(sys, 'frozen', False):
@@ -77,7 +77,7 @@ def sens_setting(sens):
 
 
 def main():
-    user_login_register()
+    user= user_login_register()
     cap = cv2.VideoCapture(0)
     start_time = None
     onPhone = 0
@@ -109,12 +109,15 @@ def main():
         if computational:
             if start_time is None:
                 start_time = time.time()
-            else:
+                continue
+            if start_time is not None:
                 duration = time.time() - start_time
-                if duration >= 2:
+                print(duration)
+                if duration >= 5:
                     print("staring at phone for 2 seconds")
-                    increment_phone_usage(global_user_id)
-                    break
+                    if user is not None:
+                        increment_phone_usage(user)
+                    continue
         else:
             start_time = None
         cv2.imshow('Frame', frame)
