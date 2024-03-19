@@ -74,8 +74,6 @@ def sens_setting(sens):
     global sensitivity
     sensitivity = sens
     
-
-
 def main():
     user= user_login_register()
     cap = cv2.VideoCapture(0)
