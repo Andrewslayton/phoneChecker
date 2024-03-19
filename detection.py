@@ -4,7 +4,8 @@ import cv2
 import time
 import dlib
 import numpy as np
-from login import user_login_register
+from login import user_login_register, global_user_id
+from aws.dynamodb import increment_phone_usage
 
 if getattr(sys, 'frozen', False):
     dat_file = os.path.join(sys._MEIPASS, 'shape_predictor_68_face_landmarks.dat')
@@ -21,8 +22,6 @@ def get_eye_center(points, landmarks):
     if len(coordinates) < 6:  
         return None
     return coordinates.mean(axis=0)
-
-
 
 
 def capture_baseline(frame):
@@ -113,8 +112,9 @@ def main():
             else:
                 duration = time.time() - start_time
                 if duration >= 2:
-                    print("stupid!! for 2 seconds")
-                    onPhone += 1
+                    print("staring at phone for 2 seconds")
+                    increment_phone_usage(global_user_id)
+                    break
         else:
             start_time = None
         cv2.imshow('Frame', frame)

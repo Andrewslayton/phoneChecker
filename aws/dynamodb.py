@@ -1,6 +1,6 @@
 import bcrypt
 import boto3
-from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.conditions import Key, Attr
 import uuid
 from dotenv import load_dotenv
 import os
@@ -56,14 +56,14 @@ def increment_phone_usage(user_id):
         print("Phone usage count updated successfully:", response)
     except Exception as e:
         print("Error updating phone usage count:", e)
-
-# Example usage:
-if __name__ == "__main__":
-    username = input("Enter username: ")
-    password = input("Enter password: ")
-
-    user_id = create_user(username, password)
-    print(f"User ID: {user_id}")
-
-    if user_id:
-        increment_phone_usage(user_id)
+        
+def authenticate_user_and_get_id(username, password):
+    response = table.scan(
+        FilterExpression=Attr('username').eq(username)
+    )
+    items = response['Items']
+    if items:
+        hashed_password = items[0]['password']
+        if bcrypt.checkpw(password.encode('utf-8'), hashed_password.value):
+            return items[0]['user_id']
+    return None
