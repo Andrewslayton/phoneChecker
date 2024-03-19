@@ -53,6 +53,8 @@ def is_looking_down_baseline(baseline_data, frame):
     forehead_base = baseline_data['forehead']
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces =  detector(gray)
+    if len(faces) == 0 and chin_base[1] != None:
+        return True
     for face in faces:
         landmarks = predictor(gray, face)
         left_eye_center = get_eye_center(left_eye_points, landmarks)
@@ -61,11 +63,9 @@ def is_looking_down_baseline(baseline_data, frame):
         forehead_center =  ((landmarks.part(19).y + landmarks.part(24).y) // 2)
         if(chin_center - chin_base[1] > 33 or forehead_center - forehead_base[1] > 33):
             return True
-        if (chin_base[1] and chin_center == None):
+        if left_eye_center[1] - left_eye_center_base[1] > 33 or right_eye_center[1] - right_eye_center_base[1] > 33:
             return True
-        if (forehead_base[1] and forehead_center == None):
-            return True
-        if(chin_center and (left_eye_center, right_eye_center) == None):
+        if (landmarks == None):
             return True
     return False
         
@@ -114,10 +114,10 @@ def main():
                 duration = time.time() - start_time
                 print(duration)
                 if duration >= 5:
-                    print("staring at phone for 2 seconds")
+                    print("staring at phone for 15 seconds")
                     if user is not None:
                         increment_phone_usage(user)
-                    continue
+                    start_time = None
         else:
             start_time = None
         cv2.imshow('Frame', frame)
