@@ -11,7 +11,7 @@ def user_login_register():
         password = password_entry.get()
         if mode.get() == "Login":
             user_id = authenticate_user_and_get_id(username, password)
-            messagebox.showinfo("Login Successful", f"Welcome {user_id}!")
+            messagebox.showinfo("Login Successful", f"Welcome {username}!")
             global_user_id = user_id
             login_register_window.destroy()
         elif mode.get() == "Register":

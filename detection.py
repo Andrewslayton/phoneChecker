@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import cv2
@@ -40,6 +41,14 @@ def capture_baseline(frame):
             'chin': chin,
             'forehead': forehead,
         }
+        os.makedirs('baseline_data', exist_ok=True)
+        with open('baseline_data/baseline.txt', 'w') as f:
+            f.write('Baseline data for phone usage detection\n')
+            f.write(str(left_eye_center) + '\n')
+            f.write(str(right_eye_center) + '\n')
+            f.write("chin")
+            f.write(str(chin) + '\n')
+            f.write(str(forehead) + '\n')
         print(baseline_data)
         return baseline_data 
     return None  
@@ -61,6 +70,17 @@ def is_looking_down_baseline(baseline_data, frame):
         right_eye_center = get_eye_center(right_eye_points, landmarks)
         chin_center = landmarks.part(8).y
         forehead_center =  ((landmarks.part(19).y + landmarks.part(24).y) // 2)
+        os.makedirs('baseline_data', exist_ok=True)
+        with open('baseline_data/baseline.txt', 'a') as f:
+            f.write('Baseline data for phone usage detection\n')
+            f.write("left eye: ")
+            f.write(str(left_eye_center) + '\n')
+            f.write("right eye: ")
+            f.write(str(right_eye_center) + '\n')
+            f.write("chin: ")
+            f.write(str(chin_center) + '\n')
+            f.write("forehead")
+            f.write(str(forehead_center) + '\n')
         if(chin_center - chin_base[1] > 33 or forehead_center - forehead_base[1] > 33):
             return True
         if left_eye_center[1] - left_eye_center_base[1] > 33 or right_eye_center[1] - right_eye_center_base[1] > 33:
@@ -75,7 +95,6 @@ def sens_setting(sens):
     sensitivity = sens
     
 def main():
-    user= user_login_register()
     cap = cv2.VideoCapture(0)
     start_time = None
     onPhone = 0
@@ -111,10 +130,8 @@ def main():
             if start_time is not None:
                 duration = time.time() - start_time
                 print(duration)
-                if duration >= 5:
+                if duration >= 15:
                     print("staring at phone for 15 seconds")
-                    if user is not None:
-                        increment_phone_usage(user)
                     start_time = None
         else:
             start_time = None
