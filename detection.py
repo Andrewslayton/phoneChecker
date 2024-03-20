@@ -5,8 +5,6 @@ import cv2
 import time
 import dlib
 import numpy as np
-from login import user_login_register
-from aws.dynamodb import increment_phone_usage
 
 if getattr(sys, 'frozen', False):
     dat_file = os.path.join(sys._MEIPASS, 'shape_predictor_68_face_landmarks.dat')
@@ -113,6 +111,7 @@ def main():
                 print("Baseline posture saved successfully.")
                 cv2.destroyWindow('Frame')
                 break  
+            cv2.destroyWindow('Frame')
         elif key == ord('q'):
             cap.release()
             cv2.destroyAllWindows()

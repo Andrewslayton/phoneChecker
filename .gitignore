@@ -12,3 +12,11 @@ build
 *.pyz
 .env
 .env.*
+.dat
+*.dat
+.swp
+*.swp
+*.swo
+*.swn
+*.swo
+*.swn
