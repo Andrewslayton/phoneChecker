@@ -32,10 +32,6 @@ def user_login_register():
     username_entry = tk.Entry(login_register_window)
     username_entry.pack()
 
-    tk.Label(login_register_window, text="Password:").pack()
-    password_entry = tk.Entry(login_register_window, show="*")
-    password_entry.pack()
-
     mode = tk.StringVar(value="Login")
     tk.Radiobutton(login_register_window, text="Login", variable=mode, value="Login").pack()
     tk.Radiobutton(login_register_window, text="Register", variable=mode, value="Register").pack()
