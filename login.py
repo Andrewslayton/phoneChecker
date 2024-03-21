@@ -1,24 +1,25 @@
-from time import sleep
 import tkinter as tk
 from tkinter import messagebox
-from aws.dynamodb import create_user, authenticate_user_and_get_id  # Adjusted import statement
+from aws.dynamodb import create_user, user_exists # Adjusted import statement
 
 def user_login_register():
     global global_user_id
     def on_submit():
         global global_user_id 
         username = username_entry.get()
-        password = password_entry.get()
         if mode.get() == "Login":
-            user_id = authenticate_user_and_get_id(username, password)
-            messagebox.showinfo("Login Successful", f"Welcome {user_id}!")
-            global_user_id = user_id
+            username = user_exists(username)
+            if username is None:
+                messagebox.showerror("Login Failed", "User does not exist.")
+                return
+            messagebox.showinfo("Login Successful", f"Welcome {username}!")
+            global_user_id = username
             login_register_window.destroy()
         elif mode.get() == "Register":
             try:
-                user_id = create_user(username, password)
+                username = create_user(username)
                 messagebox.showinfo("Registration Successful", f"You have been registered successfully.")
-                global_user_id = user_id
+                global_user_id = username
                 login_register_window.destroy()
             except Exception as e:
                 messagebox.showerror("Registration Failed", str(e))
