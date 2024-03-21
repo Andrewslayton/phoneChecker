@@ -9,7 +9,7 @@ def user_login_register():
         username = username_entry.get()
         if mode.get() == "Login":
             userT = user_exists(username)
-            if userT is True:
+            if userT is False:
                 messagebox.showerror("Login Failed", "User does not exist.")
                 return
             messagebox.showinfo("Login Successful", f"Welcome {username}!")

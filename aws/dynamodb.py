@@ -3,7 +3,6 @@ import requests
 import json
 
 
-
 link = "https://phoneleaderboard.andrewslayton.dev/api"
 
 def create_user(username):
@@ -24,7 +23,8 @@ def user_exists(username):
         response = requests.post(link + "/login" , json={"username": username})
     except Exception as e:
         print("Error checking if user exists:", e)
+    print(response.status_code)
     if response.status_code == 200:
         return True 
-    else :
-        return False
+    else:
+        return False 
