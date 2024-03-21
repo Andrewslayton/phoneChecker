@@ -5,7 +5,6 @@ Requirements:
   Must have Dlib shape_predictor_68_face_landmarks.dat.bz2
   See requirments.txt for packages  
   once installed run detection.py
-  create .env file with aws region and keys
 
 
 Proper use:
