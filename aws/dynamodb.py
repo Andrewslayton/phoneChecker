@@ -21,7 +21,10 @@ def increment_phone_usage(username):
         
 def user_exists(username):
     try:
-        requests.post(link + "/login" , json={"username": username})
+        response = requests.post(link + "/login" , json={"username": username})
     except Exception as e:
         print("Error checking if user exists:", e)
-    
+    if response.status_code == 200:
+        return True 
+    else :
+        return False

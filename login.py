@@ -8,8 +8,8 @@ def user_login_register():
         global global_user_id 
         username = username_entry.get()
         if mode.get() == "Login":
-            username = user_exists(username)
-            if username is None:
+            userT = user_exists(username)
+            if userT is True:
                 messagebox.showerror("Login Failed", "User does not exist.")
                 return
             messagebox.showinfo("Login Successful", f"Welcome {username}!")
@@ -17,7 +17,7 @@ def user_login_register():
             login_register_window.destroy()
         elif mode.get() == "Register":
             try:
-                username = create_user(username)
+                create_user(username)
                 messagebox.showinfo("Registration Successful", f"You have been registered successfully.")
                 global_user_id = username
                 login_register_window.destroy()
