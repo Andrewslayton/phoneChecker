@@ -10,11 +10,10 @@ Requirements:
 
 Proper use:
   Create account
-  your passwords are hashed creation using bcrypt
   Set face in normal gaming position including eyes focused on middle/ bottom 2/3 of screen.
   Change sensitivity, the higher the number out of 10 the more difficult it triggers that you are on your phone
   Capture face with S(only stored locally)
-  Game like normal and visit (placeholder) to see how often you are on your phone compared to others while gaming/using your computer
+  Game like normal and visit (https://phoneleaderboard.andrewslayton.dev/) to see how often you are on your phone compared to others while gaming/using your computer
 
 
 How phoneChecker works:
@@ -26,5 +25,5 @@ How phoneChecker works:
 
 
 DISCLAIMER:
-  Facial data is not saved and passwords are unknown upon creating however create a unique password for the application, if not I am not responsible for it.
+  Facial data is not saved, this is honor system based please do not track under non created usernames.
   
